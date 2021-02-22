@@ -26,7 +26,7 @@ public class Garment {
      * @return The name of the instance
      */
     public String getName () {
-        return name    
+        return name;   
     }
     /**
      * Print the purpose of the class
