@@ -1,3 +1,3 @@
-public class Cotton {
+public class Cotton extends Fabric{
     
 }

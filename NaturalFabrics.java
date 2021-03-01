@@ -1,3 +1,3 @@
-public class NaturalFabrics {
+public class NaturalFabrics extends Fabric{
     
 }
