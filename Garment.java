@@ -4,22 +4,23 @@
  */
 public abstract class Garment {
     private final String name;
-    private final Fabric fabric_type;
-    private final Double fabric_units;
+    private final Fabric fabricType;
+    private final Double fabricUnits;
     private final String purpose;
+    private final Double EURO_ENVIRO_TAX = 2.0;
 
     /**
      * Construct an instance of this class with a given fabric and number of fabric units used
      * 
      * @param name The proper English name of the Garment.
-     * @param fabric_type The fabric used in making the Garment.
-     * @param fabric_units The number of pieces of fabric used for the Garment.
+     * @param fabricType The fabric used in making the Garment.
+     * @param fabricUnits The number of pieces of fabric used for the Garment.
      */
 
-    public Garment (final String name, final Fabric fabric_type, final Double fabric_units, final String purpose) {
+    public Garment (final String name, final Fabric fabricType, final Double fabricUnits, final String purpose) {
         this.name = name;
-        this.fabric_type = fabric_type;
-        this.fabric_units = fabric_units;
+        this.fabricType = fabricType;
+        this.fabricUnits = fabricUnits;
         this.purpose = purpose;
     }
 
@@ -30,37 +31,65 @@ public abstract class Garment {
     public String getName () {
         return name;   
     }
-    /**
-     * Get the fabric_units of the instance
-     * @return The fabric_units of the instance
-     */
-    public Double getFabric_units () {
-        return fabric_units;   
-    }
-      /**
-     * Get the fabric_type of the instance
-     * @return The fabric_type of the instance
-     */
-    public Fabric getFabric_type () {
-        return fabric_type;   
-    }
 
     /**
      * Print the purpose of the class
      */
-    public void printPurpose () { System.out.println(purpose); }
+    public void printPurpose () { System.out.println(name + " " + purpose); }
 
     /**
      * Print the price of the garment
      */
     public void printItemisedBill() {
-        System.out.printf("Itemised bill for %s %n", getName());
-        System.out.printf("Made of %d units of %s", fabric_units, fabric_type.getName());
-        if (fabric_type instanceof NaturalFabrics) {
-            System.out.printf("made of %s", fabric_type.getSource());
-            System.out.printf("%n enviroment tax: 2.0 * 0.0 = 0.0");
-        } else {
-            System.out.printf("%n enviroment tax: 2.0 * %f = %f");
+        /**
+         * Itemised bill for NAME
+         * Made of __ units of fabName | made of source 
+         * enviroment tax: calculateEnviromentTax()
+         * base price: calculateBasePrice()
+         * grand total: calculateGrandTotal()
+         */
+        System.out.printf("Itemised bill for %s%n", getName());
+        System.out.printf("Made of %.1f units of %s ", fabricUnits, fabricType.getName());
+        if (isNatural().equals(true)) {
+            System.out.printf("made of %s", ((NaturalFabrics) fabricType).getSource());
         }
+        System.out.printf("%n enviroment tax: %s%n", calculateEnviromentTax());
+        System.out.printf("     base price: %s%n", calculateBasePrice());
+        System.out.printf("    grand total: %s%n", calculateGrandTotal());
+    }
+
+    private String calculateBasePrice() {
+        return String.format("%.1f * %.1f = %.1f", fabricType.getPrice(), fabricUnits, fabricType.getPrice() * fabricUnits);
+
+    }
+
+    private String calculateEnviromentTax() {
+        String output;
+        if (isNatural().equals(true)) {
+            output = String.format("%.1f * 0.0 = 0.0", fabricUnits);
+        } else {
+            output = String.format("%.1f * %.1f = %.1f", fabricUnits, EURO_ENVIRO_TAX, (fabricUnits * EURO_ENVIRO_TAX));
+        }
+        return output;
+    }
+
+    private String calculateGrandTotal() {
+        String output;
+        if (isNatural().equals(true)) {
+            output = calculateBasePrice();
+        } else {
+            output = String.format("(%.1f + %.1f) * %.1f = %.1f", fabricType.getPrice(), EURO_ENVIRO_TAX, fabricUnits, ((fabricType.getPrice() + EURO_ENVIRO_TAX)*fabricUnits));
+        }
+        return output;
+    }
+
+    private Boolean isNatural() {
+        boolean result;
+        if (fabricType instanceof NaturalFabrics) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
     }
 }
